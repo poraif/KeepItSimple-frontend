@@ -4,10 +4,5 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit(), tailwindcss()],
-	server: {
-		proxy: {
-			'/api': 'http://localhost:8080',
-		}
 	}
-
-});
+);

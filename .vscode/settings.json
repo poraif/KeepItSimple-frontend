@@ -1,0 +1,24 @@
+{
+    "favorites.resources": [
+        {
+            "filePath": "src\\lib\\ui",
+            "group": "Default"
+        },
+        {
+            "filePath": ".env",
+            "group": "Default"
+        },
+        {
+            "filePath": "src\\lib\\entity-types.ts",
+            "group": "Default"
+        },
+        {
+            "filePath": "src\\lib\\services\\api-service.ts",
+            "group": "Default"
+        },
+        {
+            "filePath": "src\\routes",
+            "group": "Default"
+        }
+    ]
+}
