@@ -4,3 +4,14 @@ export interface TermVersion {
     codeSnippet: string;
     exampleUsage: string;
 }
+
+export interface UserLogin {
+    username: string;
+    password: string;
+}
+
+export interface UserSignup {
+    email: string;
+    username: string;
+    password: string;
+}
