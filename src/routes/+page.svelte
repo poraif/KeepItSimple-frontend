@@ -1,2 +1,11 @@
-<h1>Welcome to SvelteKit</h1>
-<p class="bg-green-900">Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+    import NavBar from "$lib/ui/NavBar.svelte";
+    import HeroBanner from "$lib/ui/HeroBanner.svelte";
+    import SearchBar from "$lib/ui/SearchBar.svelte";
+  </script>
+  
+  <div class="flex flex-col items-center h-screen">
+    <NavBar />
+    <HeroBanner title="Keep It Simple" tagline="A programming dictionary by and for programmers" />
+    <SearchBar />
+  </div>

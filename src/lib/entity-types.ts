@@ -15,3 +15,12 @@ export interface UserSignup {
     username: string;
     password: string;
 }
+
+export interface TermAndCurrentVersion {
+    name: string;
+    category: string;
+    shortDef: string;
+    longDef: string;
+    codeSnippet: string;
+    exampleUsage: string;
+}
