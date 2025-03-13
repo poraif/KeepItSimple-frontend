@@ -4,8 +4,8 @@
     import SearchBar from "$lib/ui/SearchBar.svelte";
   </script>
   
+  <NavBar />
   <div class="flex flex-col items-center h-screen">
-    <NavBar />
     <HeroBanner title="Keep It Simple" tagline="A programming dictionary by and for programmers" />
     <SearchBar />
   </div>
