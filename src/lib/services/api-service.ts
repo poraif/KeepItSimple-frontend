@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { TermVersion, UserLogin, UserSignup, TermAndCurrentVersion } from '$lib/entity-types';
+import { authToken } from '$lib/auth';
 
 export const apiService = {
     baseUrl: import.meta.env.VITE_API_URL,
@@ -25,15 +26,21 @@ export const apiService = {
         }
     },
 
-    async login(user: UserLogin): Promise<string> {
+    async login(user: UserLogin): Promise<void> {
         try {
             const response = await axios.post(`${this.baseUrl}/account/login`, user);
-            return response.data.token;
+            const token = response.data.token;
+            if (token) {
+                authToken.set(token);
+                return token;
+            }
+            else {
+                throw new Error('Failed to log in');
+            }
         }
         catch (error) {
             console.error(error);
-            throw new Error('Failed to log in');
-            return "";          
+            throw new Error('Failed to log in');       
         }
     },
 
