@@ -1,16 +1,18 @@
 <script lang="ts">
     import { apiService } from '$lib/services/api-service';
     import type { UserLogin } from '$lib/entity-types';
+	import { goto } from '$app/navigation';
 
 	let username = $state("");
 	let password = $state("");
 
-	const doLogin = (): void => {
+	const doLogin = (): void =>  {
 		const userLogin: UserLogin = {
 			username: username,
 			password: password
 		};
 		apiService.login(userLogin);
+        goto('/');
 	};
 
 </script>

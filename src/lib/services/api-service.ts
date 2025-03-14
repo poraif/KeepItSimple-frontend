@@ -7,7 +7,14 @@ export const apiService = {
 
     async addTermVersion(termId: string, termVersion: TermVersion): Promise<boolean> {
         try {
-            const response = await axios.post(`${this.baseUrl}/term/${termId}/termversions`, termVersion);
+            let token: string = '';
+            authToken.subscribe((t) => (token = t));
+            const response = await axios.post(`${this.baseUrl}/term/${termId}/termversions`, termVersion,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
             return response.data.success === true;
         }
         catch (error) {
@@ -29,18 +36,24 @@ export const apiService = {
     async login(user: UserLogin): Promise<void> {
         try {
             const response = await axios.post(`${this.baseUrl}/account/login`, user);
-            const token = response.data.token;
+            console.log('Full response:', response);
+            const token = response.data;
             if (token) {
                 authToken.set(token);
+                console.log('token returned at login: ', token);
                 return token;
             }
             else {
-                throw new Error('Failed to log in');
+                throw new Error('Failed to log in: error with the auth token');
             }
         }
         catch (error) {
-            console.error(error);
-            throw new Error('Failed to log in');       
+            if (axios.isAxiosError(error)) {
+                console.error('Login error:', error.response ? error.response.data : error.message);
+            } else {
+                console.error('Login error:', error);
+            }
+            throw new Error('Failed to log in: request error');       
         }
     },
 

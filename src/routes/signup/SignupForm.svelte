@@ -1,6 +1,7 @@
 <script lang="ts">
     import { apiService } from '$lib/services/api-service';
     import type { UserSignup } from '$lib/entity-types';
+	import { goto } from '$app/navigation';
 
 	let username = $state("");
 	let email = $state("");
@@ -13,6 +14,7 @@
 			password: password
 		};
 		apiService.signup(userSignup);
+        goto('/login');
 	};
 
 </script>
