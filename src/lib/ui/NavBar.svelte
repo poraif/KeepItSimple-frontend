@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { authToken } from '$lib/auth';
+    import { authToken } from '$lib/stores';
     let token = $state("");
     authToken.subscribe((t) => (token = t));
 

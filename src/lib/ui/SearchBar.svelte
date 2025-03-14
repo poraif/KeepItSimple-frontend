@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-    import { authToken } from '$lib/auth';
+    import { authToken, termStore } from '$lib/stores';
     import type { TermAndCurrentVersion } from '$lib/entity-types';
     import { apiService } from '$lib/services/api-service';
 
@@ -8,23 +8,14 @@
     let token = $state("");
     authToken.subscribe((t) => (token = t));
 
-    const doSearch = async (): Promise<TermAndCurrentVersion | null> => {
+    const doSearch = async (): Promise<void> => {
         try {
         const searchResult = await apiService.search(searchTerm);
-		const termAndCurrentVersion: TermAndCurrentVersion = {
-            name: searchResult.name,
-            category: searchResult.category,
-            shortDef: searchResult.shortDef,
-            longDef: searchResult.longDef,
-            codeSnippet: searchResult.codeSnippet,
-            exampleUsage: searchResult.exampleUsage
-        };
-            console.log(termAndCurrentVersion);
-            goto('/term/' + searchResult.name);
-            return termAndCurrentVersion;
+		termStore.set(searchResult);
+            console.log(searchResult);
+            goto(`/term/${searchResult.name}`);
         } catch (error) {
             console.error("Search failed:", error);
-            return null;
         }
     };
 

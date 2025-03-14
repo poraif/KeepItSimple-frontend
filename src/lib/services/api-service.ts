@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { TermVersion, UserLogin, UserSignup, TermAndCurrentVersion } from '$lib/entity-types';
-import { authToken } from '$lib/auth';
+import { authToken } from '$lib/stores';
 
 export const apiService = {
     baseUrl: import.meta.env.VITE_API_URL,

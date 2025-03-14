@@ -1,5 +1,8 @@
 import { writable } from 'svelte/store';
+import type { TermAndCurrentVersion } from '$lib/entity-types';
 
+
+// auth
 export const authToken = writable(localStorage.getItem('token') || '');
 
 authToken.subscribe((token) => {
@@ -10,3 +13,6 @@ authToken.subscribe((token) => {
       localStorage.removeItem('token');
     }
   });
+
+  // term
+  export const termStore = writable<TermAndCurrentVersion | null>(null);
