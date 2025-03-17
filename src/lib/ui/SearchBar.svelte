@@ -11,9 +11,10 @@
     const doSearch = async (): Promise<void> => {
         try {
         const searchResult = await apiService.search(searchTerm);
-		termStore.set(searchResult);
-            console.log(searchResult);
+        if (searchResult)  {
+            termStore.set(searchResult);
             goto(`/term/${searchResult.name}`);
+        }
         } catch (error) {
             console.error("Search failed:", error);
         }
