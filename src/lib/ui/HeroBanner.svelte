@@ -4,6 +4,6 @@
   </script>
   
   <div class="text-center mt-20">
-    <h1 class="text-4xl font-bold">{title}</h1>
-    <p class="text-lg text-gray-600">{tagline}</p>
+    <h1 class="h1">{title}</h1>
+    <p class="text-lg">{tagline}</p>
   </div>
