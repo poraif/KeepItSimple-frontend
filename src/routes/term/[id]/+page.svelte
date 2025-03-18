@@ -4,10 +4,18 @@
 	import type { TermAndCurrentVersion } from '$lib/entity-types';
     import { termStore } from '$lib/stores';
     import { apiService } from '$lib/services/api-service';
-    import type { PageProps } from './$types';
+    // import { HighlightAuto } from "svelte-highlight";
+    import TermCodeSnippet from '$lib/ui/TermCodeSnippet.svelte';
 
-    let term: TermAndCurrentVersion | null;
-    $: termStore.subscribe(value => term = value);
+    let term = $state<TermAndCurrentVersion | null>(null);
+    let code = $state("");
+
+    termStore.subscribe(value => {
+        term = value;
+        if (term) {
+            code = term.codeSnippet; 
+        }
+        });
 
     onMount(async () => {
         if (!term) {
@@ -16,6 +24,7 @@
                 const fetchedTerm = await apiService.search(name); 
                 termStore.set(fetchedTerm); 
                 term = fetchedTerm;
+                code = term.codeSnippet;
             }
         }
     });
@@ -27,8 +36,8 @@
     <h2>{term.category}</h2>
     <p>{term.shortDef}</p>
     <p>{term.longDef}</p>
-    <pre>{term.codeSnippet}</pre>
+    <TermCodeSnippet {code} />
     <p>{term.exampleUsage}</p>
 {:else}
-    <p>Loading...</p>
+    <p>Still loading</p>
 {/if}
