@@ -6,7 +6,7 @@
     import { apiService } from '$lib/services/api-service';
     import TermCodeSnippet from '$lib/ui/TermCodeSnippet.svelte';
     import TermContentCard from '$lib/ui/TermContentCard.svelte';
-    
+    import TermNameCatCards from '$lib/ui/TermNameCatCards.svelte';
 
     let term = $state<TermAndCurrentVersion | null>(null);
     let code = $state("");
@@ -35,11 +35,8 @@
 </script>
 
 {#if term}
-    <div class="max-w-[75%] mx-auto">
-        <div class="grid grid-cols-2 gap-4 w-full">
-            <h1 class="card bg-black text-xl text-white px-7 py-4 w-full text-left">{term.name}</h1>
-            <h2 class="card preset-gradient text-xl text-white px-7 py-4 w-full text-left">{term.category}</h2>
-        </div>
+    <div class="max-w-3/4 mx-auto">
+        <TermNameCatCards termName={term.name} termCategory={term.category} />
         <TermContentCard text={term.shortDef} />
         <TermContentCard text={term.longDef} />
         {#if code}
@@ -48,12 +45,5 @@
         <TermContentCard text={term.exampleUsage} />
     </div>
 {:else}
-    <p>Still loading</p>
+    <p>Oops! Refresh issue. Please go back to search.</p>
 {/if}
-
-<style lang="postcss">
-    .preset-gradient {
-      background-image: linear-gradient(45deg, var(--color-primary-500), var(--color-tertiary-500));
-      color: var(--color-primary-contrast-500);
-    }
-  </style>

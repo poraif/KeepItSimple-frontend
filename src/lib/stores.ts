@@ -16,3 +16,6 @@ authToken.subscribe((token) => {
 
   // term
   export const termStore = writable<TermAndCurrentVersion | null>(null);
+
+  // all terms
+  // export const termListStore = writable<Arr

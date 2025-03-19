@@ -1,10 +1,21 @@
 import axios from 'axios';
-import type { TermVersion, UserLogin, UserSignup, TermAndCurrentVersion } from '$lib/entity-types';
+import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion } from '$lib/entity-types';
 import { authToken } from '$lib/stores';
 
 export const apiService = {
     baseUrl: import.meta.env.VITE_API_URL,
 
+    async addTerm(term: Term): Promise<void> {
+        try {
+            axios.post(`${this.baseUrl}/term/add`, term)
+        }
+        catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('adding term error:', error.response ? error.response.data : error.message);
+            }
+        }
+    },
+    
     async addTermVersion(termId: string, termVersion: TermVersion): Promise<boolean> {
         try {
             let token: string = '';
@@ -65,6 +76,17 @@ export const apiService = {
         catch (error) {
             console.error(error);
             throw new Error('search failed!');
+        }
+    },
+
+    async getTerms(): Promise<string[] | null> {
+        try {
+            const response = await axios.get(`${this.baseUrl}/term/terms`);
+            return response.data;
+        }
+        catch (error) {
+            console.error(error);
+            throw new Error('failed to retrieve the terms list');
         }
     }
 

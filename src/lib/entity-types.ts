@@ -1,3 +1,8 @@
+export interface Term {
+    name: string;
+    category: string;
+}
+
 export interface TermVersion {
     shortDef: string;
     longDef: string;

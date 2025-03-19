@@ -26,6 +26,6 @@
     <input bind:value={searchTerm} class="border p-2 w-96" placeholder="Enter a programming term or phrase" />
     <button onclick={doSearch} class="px-4 py-2 bg-blue-500 text-white">Search</button>
     {#if token}
-    <button onclick={() => goto('/add')} class="px-4 py-2 bg-green-500 text-white">Add Term</button>
+    <button onclick={() => goto(`/term/${searchTerm}/add`)} class="px-4 py-2 bg-green-500 text-white">Add Term</button>
     {/if}
   </div>
