@@ -2,35 +2,33 @@
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
 	import type { TermAndCurrentVersion } from '$lib/entity-types';
-    import { termStore } from '$lib/stores';
+    import { currentTermStore, termStore } from '$lib/stores';
     import { apiService } from '$lib/services/api-service';
     import TermCodeSnippet from '$lib/ui/TermCodeSnippet.svelte';
     import TermContentCard from '$lib/ui/TermContentCard.svelte';
     import TermNameCatCards from '$lib/ui/TermNameCatCards.svelte';
 
     let term = $state<TermAndCurrentVersion | null>(null);
+
+    currentTermStore.subscribe((value) => {
+        term = value;
+    });
+
     let code = $state("");
     let shortDef = $state("");
 
-    termStore.subscribe(value => {
-        term = value;
-        if (term) {
-            code = term.codeSnippet; 
-        }
-        });
-
-    onMount(async () => {
-        if (!term) {
-            const name = $page.url.pathname.split('/').pop(); 
-            if (name) {
-                const fetchedTerm = await apiService.search(name); 
-                termStore.set(fetchedTerm); 
-                term = fetchedTerm;
-                code = term.codeSnippet;
-                shortDef = term.shortDef.toString();
-            }
-        }
-    });
+    // onMount(async () => {
+    //     if (!term) {
+    //         const name = $page.url.pathname.split('/').pop(); 
+    //         if (name) {
+    //             const fetchedTerm = await apiService.search(name); 
+    //             termStore.set(fetchedTerm); 
+    //             term = fetchedTerm;
+    //             code = term.codeSnippet;
+    //             shortDef = term.shortDef.toString();
+    //         }
+    //     }
+    // });
 
 </script>
 

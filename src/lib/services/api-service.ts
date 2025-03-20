@@ -1,6 +1,8 @@
 import axios from 'axios';
 import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion } from '$lib/entity-types';
-import { authToken } from '$lib/stores';
+import { authToken, userNameStore, getUserFromToken } from '$lib/stores';
+// import { persisted } from 'svelte-persisted-store';
+import { get } from 'svelte/store';
 
 export const apiService = {
     baseUrl: import.meta.env.VITE_API_URL,
@@ -16,11 +18,27 @@ export const apiService = {
         }
     },
     
-    async addTermVersion(termId: string, termVersion: TermVersion): Promise<boolean> {
+    async addTermVersion(termName: string, termVersion: TermVersion): Promise<boolean> {
         try {
-            let token: string = '';
-            authToken.subscribe((t) => (token = t));
-            const response = await axios.post(`${this.baseUrl}/term/${termId}/termversions`, termVersion,  {
+            const token = get(authToken);
+            const response = await axios.post(`${this.baseUrl}/term/${termName}/termversions`, termVersion,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async addTermAndVersion(termAndCurrentVersion: TermAndCurrentVersion): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.post(`${this.baseUrl}/term/addtermandversion`, termAndCurrentVersion, {
                 headers: {
                     Authorization: `Bearer ${token}`, 
                     'Content-Type': 'application/json'
@@ -51,6 +69,8 @@ export const apiService = {
             const token = response.data;
             if (token) {
                 authToken.set(token);
+                const userName = getUserFromToken(token);
+                userNameStore.set(userName);
                 console.log('token returned at login: ', token);
                 return token;
             }
@@ -79,7 +99,7 @@ export const apiService = {
         }
     },
 
-    async getTerms(): Promise<string[] | null> {
+    async getTermNames(): Promise<string[]> {
         try {
             const response = await axios.get(`${this.baseUrl}/term/terms`);
             return response.data;

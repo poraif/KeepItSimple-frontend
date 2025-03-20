@@ -1,8 +1,12 @@
 <script lang="ts">
     import { authToken } from '$lib/stores';
     import { page } from '$app/state';
+
     let token = $state("");
-    authToken.subscribe((t) => (token = t));
+
+    authToken.subscribe((value) => {
+        token = value;
+    });
 
     const doLogout = () => {
         authToken.set("");

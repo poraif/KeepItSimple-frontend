@@ -1,18 +1,24 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-    import { authToken, termStore } from '$lib/stores';
+    import { authToken, termStore, currentTermStore } from '$lib/stores';
     import type { TermAndCurrentVersion } from '$lib/entity-types';
     import { apiService } from '$lib/services/api-service';
+    import { get } from 'svelte/store';
+	import { onMount } from 'svelte';
 
     let searchTerm = $state("");
+
     let token = $state("");
-    authToken.subscribe((t) => (token = t));
+
+    authToken.subscribe((value) => {
+        token = value;
+    });
 
     const doSearch = async (): Promise<void> => {
         try {
         const searchResult = await apiService.search(searchTerm);
         if (searchResult)  {
-            termStore.set(searchResult);
+            currentTermStore.set(searchResult);
             goto(`/term/${searchResult.name}`);
         }
         } catch (error) {

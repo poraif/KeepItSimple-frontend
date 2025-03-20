@@ -1,7 +1,6 @@
 <script lang="ts">
+  let { text, onClick }: { text: string, onClick: any } = $props();
   
   </script>
   
-  <button type={"button"} class="button">
-    <slot></slot>
-  </button>
+  <button type="button" onclick={onClick} class="btn btn-sm preset-filled-primary-500">{text}</button>

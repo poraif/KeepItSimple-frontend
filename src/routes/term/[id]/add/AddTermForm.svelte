@@ -1,7 +1,35 @@
 <script lang="ts">
   import { apiService } from '$lib/services/api-service';
-  import type { Term, TermVersion } from '$lib/entity-types';
+  import type { Term, TermAndCurrentVersion, TermVersion } from '$lib/entity-types';
   import { page } from '$app/state';
+  import { onMount } from 'svelte';
+	import { termListStore } from '$lib/stores';
+	import { get } from 'svelte/store';
+  import InputFieldCode from '$lib/ui/form/InputFieldCode.svelte';
+  import SelectDropdown from '$lib/ui/form/SelectDropdown.svelte';
+	import InputFieldShort from '$lib/ui/form/InputFieldShort.svelte';
+  import InputFieldLong from '$lib/ui/form/InputFieldLong.svelte';
+	import Button from '$lib/ui/Button.svelte';
+  
+  let termNames = $state([""]);
+  termListStore.subscribe((value) => {
+    termNames = value;
+  });
+
+
+
+  let categories = [
+    "Concept", "Paradigm", "Data Structures & Algorithms",
+    "Dev & Engineering", "Databases", "Systems & Networking",
+    "Languages & Frameworks", "Security", "AI & Data Science",
+    "Tooling & Infrastructure"
+  ];
+
+  onMount(async () => {
+    const termList = await apiService.getTermNames();
+    termListStore.set(termList);
+    console.log(get(termListStore));
+  });
 
   let category = $state("");
   let shortDef = $state("");
@@ -12,62 +40,50 @@
   const termName = $derived(page.params.id);
 
   const addTermAndVersion = (): void => {
-    const term: Term = {
-      name: termName,
-      category: category
-    }
     const termVersion: TermVersion = {
       shortDef: shortDef,
       longDef: longDef,
       codeSnippet: codeSnippet,
       exampleUsage: exampleUsage
     };
-    apiService.addTerm(term);
-    apiService.addTermVersion(termName, termVersion);
+    const termAndVersion: TermAndCurrentVersion = {
+      name: termName,
+      category: category,
+      shortDef: shortDef,
+      longDef: longDef,
+      codeSnippet: codeSnippet,
+      exampleUsage: exampleUsage
+    };
+    if (termNames.includes(termName)) {
+      apiService.addTermVersion(termName, termVersion);
+      console.log("Added term version, term existed");
+    }
+    else {
+      console.log("Added term version and term, term didnt exist");
+      apiService.addTermAndVersion(termAndVersion);
+      termListStore.update((termList) => [...termList, termName]);
+    }
   };
 </script>
 
 
-<form class="w-full max-w-sm">
-   
+<form class="max-w-1/2 mx-auto items-center">
+
+  {#if (!termNames.includes(termName)) }
   <label for="category">Category</label>
-  <select class="select" id="category" bind:value={category} name="category" required>
-    <option value="Concept">Concept</option>
-    <option value="Paradigm">Paradigm</option>
-    <option value="Data Structures & Algorithms">Data Structures & Algorithms</option>
-    <option value="Dev & Engineering">Dev & Engineering</option>
-    <option value="Databases">Databases</option>
-    <option value="Systems & Networking">Systems & Networking</option>
-    <option value="Languages & Frameworks">Languages & Frameworks</option>
-    <option value="Security">Security</option>
-    <option value="AI & Data Science">AI & Data Science</option>
-    <option value="Tooling & Infrastructure">Tooling & Infrastructure</option>
-  </select>
-
-  <div class="mb-4">
-    <label for="shortDef">Short Definition</label>
-    <input id="shortDef" type="text" bind:value={shortDef} name="shortDef" required>
-  </div>
-
-    <div class="mb-4">
-      <label for="shortDef">Short Definition</label>
-      <input id="shortDef" type="text" bind:value={shortDef} name="shortDef" placeholder="Add a short ELI5 definition!" required>
-    </div>
-  
-    <div class="mb-4">
-      <label for="longDef">Long Definition</label>
-      <textarea id="longDef" bind:value={longDef} name="longDef" rows="4" placeholder="Provide a bit of extra information." required></textarea>
-    </div>
-  
-    <div class="mb-4">
-      <label for="codeSnippet">Code Snippet</label>
-      <textarea class= "font-mono bg-gray-700 text-white border-gray-400 rounded-md" id="codeSnippet" bind:value={codeSnippet} name="codeSnippet" placeholder="Add a short code snippet if applicable." rows="6"></textarea>
-    </div>
-  
-    <div class="mb-4">
-      <label for="exampleUsage">Example Usage</label>
-      <textarea id="exampleUsage" bind:value={exampleUsage} name="exampleUsage" rows="4"></textarea>
-    </div>
-  
-    <button onclick={() => addTermAndVersion()}>Submit</button>
+  <SelectDropdown id="category" bind:value={category}>
+    {#each categories as category}
+    <option value={category}>{category}</option>
+  {/each}
+  </SelectDropdown>
+  {/if}
+  <label for="shortDef">Short definition</label>
+  <InputFieldShort id="shortDef" name="shortDef" value={shortDef} placeholder="Add a short ELI5 definition!" />
+  <label for="longDef">Long definition</label>
+  <InputFieldLong id="longDef" name="longDef" value={longDef} placeholder="Provide a bit of extra information." />
+  <label for="codeSnippet">Code snippet</label>
+  <InputFieldCode id="codeSnippet" name="codeSnippet" value={codeSnippet} placeholder="Add a short code snippet if applicable." />
+  <label for="exampleUsage">Example usage</label>
+  <InputFieldLong id="exampleUsage" name="longDef" value={exampleUsage} placeholder="Provide practical info on the industries, scenarios, technologies etc that use this." />
+  <Button text="Submit" onClick={() => addTermAndVersion()} />
   </form>
