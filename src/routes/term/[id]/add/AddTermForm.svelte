@@ -71,19 +71,19 @@
 
   {#if (!termNames.includes(termName)) }
   <label for="category">Category</label>
-  <SelectDropdown id="category" bind:value={category}>
+  <select name="category" id="category" bind:value={category} class="select w-full px-7 py-4 mt-4 bg-secondary-600 border border-secondary-100 shadow-xl text-sm text-left" required>
     {#each categories as category}
     <option value={category}>{category}</option>
-  {/each}
-  </SelectDropdown>
+    {/each}
+  </select>
   {/if}
   <label for="shortDef">Short definition</label>
-  <InputFieldShort id="shortDef" name="shortDef" value={shortDef} placeholder="Add a short ELI5 definition!" />
+  <input class="input w-full px-7 py-4 mt-4 bg-secondary-600 border border-secondary-100 shadow-xl text-s text-left" type="text" id="shortDef" name="shortDef" placeholder="Add a short ELI5 definition!" bind:value={shortDef} required>
   <label for="longDef">Long definition</label>
-  <InputFieldLong id="longDef" name="longDef" value={longDef} placeholder="Provide a bit of extra information." />
+  <textarea class="input w-full px-7 py-4 mt-4 bg-secondary-600 border border-secondary-100 shadow-xl text-sm text-left" id="longDef" name="longDef" rows="3" placeholder="Provide a bit of extra information." bind:value={longDef} required></textarea>
   <label for="codeSnippet">Code snippet</label>
-  <InputFieldCode id="codeSnippet" name="codeSnippet" value={codeSnippet} placeholder="Add a short code snippet if applicable." />
+  <textarea class="input font-mono bg-gray-700 text-white border-gray-400 rounded-md w-full px-7 py-4 mt-4 border *:shadow-xl text-s text-left text-scaling"  bind:value={codeSnippet} rows="4" id="codeSnippet" name="codeSnippet" placeholder="Add a short code snippet if applicable."></textarea>
   <label for="exampleUsage">Example usage</label>
-  <InputFieldLong id="exampleUsage" name="longDef" value={exampleUsage} placeholder="Provide practical info on the industries, scenarios, technologies etc that use this." />
+  <textarea class="input w-full px-7 py-4 mt-4 bg-secondary-600 border border-secondary-100 shadow-xl text-sm text-left" id="exampleUsage" name="exampleUsage" rows="3" placeholder="Explain practical usage / professional usage etc." bind:value={exampleUsage} required></textarea>
   <Button text="Submit" onClick={() => addTermAndVersion()} />
   </form>
