@@ -3,4 +3,4 @@
   
   </script>
   
-  <button type="button" onclick={onClick} class="btn btn-sm preset-filled-primary-500">{text}</button>
+  <button type="button" onclick={onClick} class="btn btn-sm preset-filled-primary-500">{text}</button> 
