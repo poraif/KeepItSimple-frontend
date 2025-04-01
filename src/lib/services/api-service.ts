@@ -90,18 +90,19 @@ export const apiService = {
 
     async search(termName: string): Promise<TermAndCurrentVersion> {
         try {
-            const response = await axios.get(`${this.baseUrl}/term/search/?term=${termName}`);
+            const token = get(authToken);
+            const response = await axios.get(`${this.baseUrl}/term/search/?term=${termName}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
             console.log('search response:', response);
             return response.data;
         }
-        catch (error: any) {
-            console.error('Search failed:', error);
-            if (error.response) {
-                console.error('Error response:', error.response);
-            } else {
-                console.error('Error message:', error.message);
-            }
-            throw new Error('Search failed!');
+        catch (error) {
+            console.error(error);
+            throw new Error('search failed!');
         }
     },
 
