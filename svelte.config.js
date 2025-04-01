@@ -1,7 +1,9 @@
 import adapter from '@sveltejs/adapter-static';
 
 export default {
-	kit: {
-		adapter: adapter({})
-	}
+  kit: {
+    adapter: adapter({
+      fallback: 'index.html' 
+    })
+  }
 };
