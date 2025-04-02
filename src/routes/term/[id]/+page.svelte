@@ -7,6 +7,8 @@
     import TermCodeSnippet from '$lib/ui/TermCodeSnippet.svelte';
     import TermContentCard from '$lib/ui/TermContentCard.svelte';
     import TermNameCatCards from '$lib/ui/TermNameCatCards.svelte';
+    import "svelte-highlight/styles/a11y-dark.css";
+    import { HighlightAuto } from "svelte-highlight";
 
     let term = $state<TermAndCurrentVersion | null>(null);
 
@@ -37,8 +39,10 @@
         <TermNameCatCards termName={term.name} termCategory={term.category} />
         <TermContentCard text={term.shortDef} />
         <TermContentCard text={term.longDef} />
-        {#if code}
-            <TermCodeSnippet {code} /> 
+        {#if term.codeSnippet}
+        <div class="card w-full px-7 py-4 mt-4 bg-secondary-600 border border-secondary-100 shadow-xl text-xl text-left">
+            <HighlightAuto code={term.codeSnippet} />
+          </div>
         {/if}
         <TermContentCard text={term.exampleUsage} />
     </div>
