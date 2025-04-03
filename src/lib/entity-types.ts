@@ -22,7 +22,7 @@ export interface UserSignup {
 }
 
 export interface TermAndCurrentVersion {
-    id?: bigint;
+    id: bigint;
     name: string;
     category: string;
     shortDef: string;
@@ -30,6 +30,7 @@ export interface TermAndCurrentVersion {
     codeSnippet: string;
     exampleUsage: string;
     username: string;
+    voteValue?: number;
 }
 
 export interface AddTermAndVersion {

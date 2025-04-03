@@ -38,6 +38,28 @@
         }
     };
 
+    const doUpvote = async (): Promise<void> => {
+        if (term?.voteValue === null || term?.voteValue === -1 || term?.voteValue === 0) {
+            term.voteValue = 1;
+            await apiService.voteTermVersion(term.name, term.id, term.voteValue);
+        }
+        else if (term?.voteValue === 1) {
+            term.voteValue = 0;
+        }
+        else throw Error("vote value appears wrong");
+    };
+
+    const doDownVote = async (): Promise<void> => {
+        if (term?.voteValue === null || term?.voteValue === 1 || term?.voteValue === 0) {
+            term.voteValue = -1;
+            await apiService.voteTermVersion(term.name, term.id, term.voteValue);
+        }
+        else if (term?.voteValue === -1) {
+            term.voteValue = 0;
+        }
+        else throw Error("vote value appears wrong");
+    };
+
     const doDelete = async (): Promise<void> => {
         try {
             if (term) {
@@ -48,6 +70,7 @@
         } catch (error) {
             console.error("Delete failed:", error);
         }
+    
     };
 
 
@@ -67,8 +90,8 @@
         {#snippet trail()}
             {#if !(termAuthorCheck()) && token}
             <SquarePlus size={35} />
-          <CircleArrowUp size={35} />
-          <CircleArrowDown size={35} />
+          <button onclick={() => doUpvote()}><CircleArrowUp size={35} /></button>
+          <button onclick={() => doDownVote()}><CircleArrowDown size={35} /></button>
             {/if}
             {#if (termAuthorCheck()) && token}	
             <button onclick={() => goto(`/term/${term?.name}/termversion/${term?.id}/update`)}><Pencil size={35} /></button>
