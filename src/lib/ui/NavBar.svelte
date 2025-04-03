@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { authToken, userNameStore } from '$lib/stores';
+    import { authToken, usernameStore } from '$lib/stores';
     import { page } from '$app/state';
 
     let token = $state("");
@@ -9,13 +9,13 @@
         token = value;
     });
 
-    userNameStore.subscribe((value) => {
+    usernameStore.subscribe((value) => {
         username = value;
     });
 
     const doLogout = () => {
         authToken.set("");
-        userNameStore.set("");
+        usernameStore.set("");
     };
     
 

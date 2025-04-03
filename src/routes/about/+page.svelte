@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { userNameStore } from "$lib/stores";
+	import { usernameStore } from "$lib/stores";
 
 
-     let username = $userNameStore
+     let username = $usernameStore
 
 </script>
 

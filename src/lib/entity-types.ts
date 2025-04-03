@@ -22,6 +22,17 @@ export interface UserSignup {
 }
 
 export interface TermAndCurrentVersion {
+    id?: bigint;
+    name: string;
+    category: string;
+    shortDef: string;
+    longDef: string;
+    codeSnippet: string;
+    exampleUsage: string;
+    username: string;
+}
+
+export interface AddTermAndVersion {
     name: string;
     category: string;
     shortDef: string;

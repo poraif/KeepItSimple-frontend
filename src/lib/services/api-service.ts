@@ -1,6 +1,6 @@
 import axios from 'axios';
-import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion } from '$lib/entity-types';
-import { authToken, userNameStore, getUserFromToken } from '$lib/stores';
+import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion, AddTermAndVersion } from '$lib/entity-types';
+import { authToken, usernameStore, getUserFromToken } from '$lib/stores';
 // import { persisted } from 'svelte-persisted-store';
 import { get } from 'svelte/store';
 
@@ -35,7 +35,41 @@ export const apiService = {
         }
     },
 
-    async addTermAndVersion(termAndCurrentVersion: TermAndCurrentVersion): Promise<boolean> {
+    async updateTermVersion(termName: string, termVersion: TermVersion, versionId: bigint): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.put(`${this.baseUrl}/term/${termName}/termversion/${versionId}/update`, termVersion,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async deleteTermVersion(termName: string, versionId: bigint | undefined): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.delete(`${this.baseUrl}/term/${termName}/termversion/${versionId}/delete`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async addTermAndVersion(termAndCurrentVersion: AddTermAndVersion): Promise<boolean> {
         try {
             const token = get(authToken);
             const response = await axios.post(`${this.baseUrl}/term/addtermandversion`, termAndCurrentVersion, {
@@ -69,8 +103,8 @@ export const apiService = {
             const token = response.data;
             if (token) {
                 authToken.set(token);
-                const userName = getUserFromToken(token);
-                userNameStore.set(userName);
+                const username = getUserFromToken(token);
+                usernameStore.set(username);
                 console.log('token returned at login: ', token);
                 return token;
             }

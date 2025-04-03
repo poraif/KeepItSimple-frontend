@@ -19,7 +19,7 @@ export const getUserFromToken = (authToken: string): string => {
 export const authToken = persisted('token', ''); 
 
 // user
-export const userNameStore = persisted('userName', '');
+export const usernameStore = persisted('username', '');
 
   // term
   export const termStore = writable<TermAndCurrentVersion | null>(null);

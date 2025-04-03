@@ -1,14 +1,10 @@
 <script lang="ts">
   import { apiService } from '$lib/services/api-service';
-  import type { Term, TermAndCurrentVersion, TermVersion } from '$lib/entity-types';
+  import type { AddTermAndVersion, Term, TermAndCurrentVersion, TermVersion } from '$lib/entity-types';
   import { page } from '$app/state';
   import { onMount } from 'svelte';
 	import { termListStore } from '$lib/stores';
 	import { get } from 'svelte/store';
-  import InputFieldCode from '$lib/ui/form/InputFieldCode.svelte';
-  import SelectDropdown from '$lib/ui/form/SelectDropdown.svelte';
-	import InputFieldShort from '$lib/ui/form/InputFieldShort.svelte';
-  import InputFieldLong from '$lib/ui/form/InputFieldLong.svelte';
 	import Button from '$lib/ui/Button.svelte';
   
   let termNames = $state([""]);
@@ -46,7 +42,7 @@
       codeSnippet: codeSnippet,
       exampleUsage: exampleUsage
     };
-    const termAndVersion: TermAndCurrentVersion = {
+    const termAndVersion: AddTermAndVersion = {
       name: termName,
       category: category,
       shortDef: shortDef,
