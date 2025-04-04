@@ -38,7 +38,7 @@ export const apiService = {
     async voteTermVersion(termName: string, versionId: bigint, voteValue: number): Promise<boolean> {
         try {
             const token = get(authToken);
-            const response = await axios.post(`${this.baseUrl}/term/${termName}/termversion/${versionId}/vote`, voteValue,  {
+            const response = await axios.put(`${this.baseUrl}/term/${termName}/termversion/${versionId}/vote`, voteValue,  {
                 headers: {
                     Authorization: `Bearer ${token}`, 
                     'Content-Type': 'application/json'

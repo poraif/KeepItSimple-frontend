@@ -39,26 +39,44 @@
     };
 
     const doUpvote = async (): Promise<void> => {
-        if (term?.voteValue === null || term?.voteValue === -1 || term?.voteValue === 0) {
-            term.voteValue = 1;
-            await apiService.voteTermVersion(term.name, term.id, term.voteValue);
+        try {
+            if (term) {
+                let vote = 0;
+        if (term.loggedInUserVote === 1) {
+            vote = 0;
         }
-        else if (term?.voteValue === 1) {
-            term.voteValue = 0;
+        else {
+            vote = 1;
+                }
+                await apiService.voteTermVersion(term.name, term.id, vote);
+                const updatedTerm = { ...term, loggedInUserVote: vote };
+                currentTermStore.set(updatedTerm);
+            }
         }
-        else throw Error("vote value appears wrong");
-    };
+    catch (error) {
+        console.error(`upvote failed the vote was ${term?.loggedInUserVote}`, error);
+    }
+}
 
-    const doDownVote = async (): Promise<void> => {
-        if (term?.voteValue === null || term?.voteValue === 1 || term?.voteValue === 0) {
-            term.voteValue = -1;
-            await apiService.voteTermVersion(term.name, term.id, term.voteValue);
+const doDownVote = async (): Promise<void> => {
+    try {
+            if (term) {
+                let vote = 0;
+        if (term.loggedInUserVote === -1) {
+            vote = 0;
         }
-        else if (term?.voteValue === -1) {
-            term.voteValue = 0;
+        else {
+            vote = -1;
+                }
+                await apiService.voteTermVersion(term.name, term.id, vote);
+                const updatedTerm = { ...term, loggedInUserVote: vote };
+                currentTermStore.set(updatedTerm);
+            }
         }
-        else throw Error("vote value appears wrong");
-    };
+    catch (error) {
+        console.error(`downvote failed the vote was ${term?.loggedInUserVote}`, error);
+    }
+}
 
     const doDelete = async (): Promise<void> => {
         try {
@@ -79,7 +97,7 @@
     
     <AppBar>
         {#snippet lead()}
-          <ChevronsLeft size={40} />
+          <button onclick={() => goto("/")}><ChevronsLeft size={40} /></button>
           <FlagTriangleRight size={40} />
         {/snippet}
         {#snippet children()}

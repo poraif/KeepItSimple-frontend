@@ -30,7 +30,7 @@ export interface TermAndCurrentVersion {
     codeSnippet: string;
     exampleUsage: string;
     username: string;
-    voteValue?: number;
+    loggedInUserVote: number;
 }
 
 export interface AddTermAndVersion {
