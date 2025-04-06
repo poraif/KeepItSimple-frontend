@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { TermAndCurrentVersion } from '$lib/entity-types';
+import type { TermAndCurrentVersion, TermCollection } from '$lib/entity-types';
 import { persisted } from 'svelte-persisted-store';
 import { jwtDecode } from 'jwt-decode';
 
@@ -25,6 +25,8 @@ export const usernameStore = persisted('username', '');
   export const termStore = writable<TermAndCurrentVersion | null>(null);
 
   export const termListStore = persisted<string[]>('termList', []);
+
+  export const termCollectionStore = persisted<TermCollection[]>('collectionList', []);
 
   export const currentTermStore = persisted<TermAndCurrentVersion | null>('currentTerm', null);
 

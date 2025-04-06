@@ -1,11 +1,13 @@
 import axios from 'axios';
-import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion, AddTermAndVersion } from '$lib/entity-types';
+import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion, AddTermAndVersion, TermCollection } from '$lib/entity-types';
 import { authToken, usernameStore, getUserFromToken } from '$lib/stores';
 // import { persisted } from 'svelte-persisted-store';
 import { get } from 'svelte/store';
 
 export const apiService = {
     baseUrl: import.meta.env.VITE_API_URL,
+
+    /*TERM CRUD METHODS*/
 
     async addTerm(term: Term): Promise<void> {
         try {
@@ -22,23 +24,6 @@ export const apiService = {
         try {
             const token = get(authToken);
             const response = await axios.post(`${this.baseUrl}/term/${termName}/termversions`, termVersion,  {
-                headers: {
-                    Authorization: `Bearer ${token}`, 
-                    'Content-Type': 'application/json'
-                }
-            });
-            return response.data.success === true;
-        }
-        catch (error) {
-            console.error(error);
-            return false;
-        }
-    },
-
-    async voteTermVersion(termName: string, versionId: bigint, voteValue: number): Promise<boolean> {
-        try {
-            const token = get(authToken);
-            const response = await axios.put(`${this.baseUrl}/term/${termName}/termversion/${versionId}/vote`, voteValue,  {
                 headers: {
                     Authorization: `Bearer ${token}`, 
                     'Content-Type': 'application/json'
@@ -103,6 +88,30 @@ export const apiService = {
         }
     },
 
+
+    /*VOTE FOR TERM*/
+
+
+    async voteTermVersion(termName: string, versionId: bigint, voteValue: number): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.put(`${this.baseUrl}/term/${termName}/termversion/${versionId}/vote`, voteValue,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+
+    /* AUTH */
+
     async signup(user: UserSignup): Promise<void> {
         try {
             await axios.post(`${this.baseUrl}/account/signup`, user);
@@ -139,6 +148,8 @@ export const apiService = {
         }
     },
 
+    /* SEARCH TERM */
+
     async search(termName: string): Promise<TermAndCurrentVersion> {
         try {
             const response = await axios.get(`${this.baseUrl}/term/search?term=${termName}`);
@@ -151,6 +162,8 @@ export const apiService = {
         }
     },
 
+    /* LIST ALL TERMS */
+
     async getTermNames(): Promise<string[]> {
         try {
             const response = await axios.get(`${this.baseUrl}/term/terms`);
@@ -160,7 +173,129 @@ export const apiService = {
             console.error(error);
             throw new Error('failed to retrieve the terms list');
         }
-    }
+    },
+
+    /* TERM COLLECTION CRUD */
+
+    async addCollection(TermCollection: TermCollection): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.post(`${this.baseUrl}/collections/add`, TermCollection,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async updateCollection(termCollection: TermCollection, collectionName: string): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.put(`${this.baseUrl}/collections/${collectionName}/update`, termCollection,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async addTermtoCollection(termName: string, collectionName: string): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.put(`${this.baseUrl}/collections/${collectionName}/addterm?=${termName}`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async removeTermFromCollection(termName: string, collectionName: string): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.put(`${this.baseUrl}/collections/${collectionName}/removeterm?=${termName}`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
+    async getUserCollections(): Promise<TermCollection[]|[]> {
+        try {
+            const token = get(authToken);
+            const response = await axios.get(`${this.baseUrl}/collections/list`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data as TermCollection[];
+        }
+        catch (error) {
+            console.error(error);
+            return [];
+        }
+    },
+
+    async getCollectionTerms(collectionName: string): Promise<Term[]|[]> {
+        try {
+            const token = get(authToken);
+            const response = await axios.get(`${this.baseUrl}/collections/${collectionName}/termlist`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data as Term[];
+        }
+        catch (error) {
+            console.error(error);
+            return [];
+        }
+    },
+
+    async deleteCollection(collectionName: string): Promise<boolean> {
+        try {
+            const token = get(authToken);
+            const response = await axios.delete(`${this.baseUrl}/collections/${collectionName}/delete`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data.success === true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    },
+
 
 
 };

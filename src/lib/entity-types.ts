@@ -41,3 +41,8 @@ export interface AddTermAndVersion {
     codeSnippet: string;
     exampleUsage: string;
 }
+
+export interface TermCollection {
+    name: string,
+    description: string
+}

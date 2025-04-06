@@ -20,7 +20,6 @@
 <div class="card mx-auto max-w-sm p-6 shadow-lg rounded-lg border border-gray-200">
     <div class="card-header mb-4">
         <h3 class="text-2xl font-semibold">Login</h3>
-        <p class="text-gray-600">Enter details below to log in</p>
     </div>
     <div class="card-content">
         <div class="grid gap-4">
