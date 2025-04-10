@@ -11,9 +11,15 @@
     });
 
     const doSearch = async (): Promise<void> => {
-        toaster.info({ title: 'Generating term...' });
+        const fixedTerm = searchTerm.toLowerCase().trim();
+        if (searchTerm === "") {
+            toaster.error({ title: 'Please enter a term to add' });
+            return;
+        }
+        else {
+        toaster.info({ title: 'Attempting to generate...' });
         try {
-            const searchResult = await apiService.search(searchTerm);
+            const searchResult = await apiService.search(fixedTerm);
             if (searchResult === null) {
                 toaster.error({ title: 'Not a programming term! Rephrase?' });
                 searchTerm = "";
@@ -25,14 +31,16 @@
         } catch (error) {
             console.error("Search failed:", error);
         }
+    }
     };
 
     const doAdd = async (): Promise<void> => {
-        if (searchTerm === "") {
+        const fixedTerm = searchTerm.toLowerCase().trim();
+        if (fixedTerm === "") {
             toaster.error({ title: 'Please enter a term to add' });
             return;
         } else {
-            goto(`/term/${searchTerm}/add`);
+            goto(`/term/${fixedTerm}/add`);
         }
     };
 </script>

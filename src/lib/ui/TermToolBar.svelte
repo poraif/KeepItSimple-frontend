@@ -106,11 +106,19 @@ const doDownVote = async (): Promise<void> => {
         {/if}
         {/snippet}
         {#snippet trail()}
-            {#if !(termAuthorCheck()) && token}
-            <SquarePlus size={35} />
-          <button onclick={() => doUpvote()}><CircleArrowUp size={35} /></button>
-          <button onclick={() => doDownVote()}><CircleArrowDown size={35} /></button>
-            {/if}
+        {#if !(termAuthorCheck()) && token}
+          <SquarePlus size={35} />
+          {#if term?.loggedInUserVote === 1}
+            <button onclick={() => doUpvote()}><CircleArrowUp size={35} fill="green" /></button>
+            <button onclick={() => doDownVote()}><CircleArrowDown size={35} /></button>
+          {:else if term?.loggedInUserVote === 0 || term?.loggedInUserVote === null}
+            <button onclick={() => doUpvote()}><CircleArrowUp size={35} /></button>
+            <button onclick={() => doDownVote()}><CircleArrowDown size={35} /></button>
+          {:else if term?.loggedInUserVote === -1}
+            <button onclick={() => doUpvote()}><CircleArrowUp size={35} /></button>
+            <button onclick={() => doDownVote()}><CircleArrowDown size={35} fill="green"/></button>
+          {/if}   
+        {/if} 
             {#if (termAuthorCheck()) && token}	
             <button onclick={() => goto(`/term/${term?.name}/termversion/${term?.id}/update`)}><Pencil size={35} /></button>
             <button onclick={() => doDelete()}><Trash2 size={35} /></button>

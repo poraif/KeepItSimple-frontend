@@ -2,18 +2,35 @@
     import { apiService } from '$lib/services/api-service';
     import type { UserSignup } from '$lib/entity-types';
 	import { goto } from '$app/navigation';
+    import { toaster } from '$lib/stores';
 
 	let username = $state("");
 	let email = $state("");
 	let password = $state("");
 
-	const doSignup = (): void => {
+	const doSignup = async (): Promise<void> => {
 		const userSignup: UserSignup = {
-			username: username,
-			email: email,
+			username: username.toLowerCase().trim(),
+			email: email.toLowerCase().trim(),
 			password: password
 		};
-		apiService.signup(userSignup);
+        if (!username || !email || !password) {
+            toaster.error({ title: 'Please fill in all fields.' });
+            return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+		toaster.error({ title: "email is not in right format" });
+		return;
+	    }
+		const success = await apiService.signup(userSignup);
+        if (success) {
+            toaster.success({ title: 'Account created successfully!' });
+            console.log("Signup successful");
+            goto('/login');
+        } else {
+            toaster.error({ title: 'Signup failed. Please try again.' });
+            console.log("Signup failed");
+        }
         goto('/login');
 	};
 

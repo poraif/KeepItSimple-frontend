@@ -2,7 +2,7 @@
     import { apiService } from '$lib/services/api-service';
     import type { TermAndCurrentVersion, TermVersion } from '$lib/entity-types';
     import { page } from '$app/state';
-    import { currentTermStore, termListStore } from '$lib/stores';
+    import { currentTermStore, toaster } from '$lib/stores';
     import Button from '$lib/ui/Button.svelte';
 	import { goto } from '$app/navigation';
 
@@ -31,10 +31,16 @@
         codeSnippet: codeSnippet,
         exampleUsage: exampleUsage
       };
-        apiService.updateTermVersion(termName, termVersion, termVersionId);
+        const success = apiService.updateTermVersion(termName, termVersion, termVersionId);
+        if (!success) {
+          toaster.error({ title: 'Failed to update!' });
+          return;
+        }
+        toaster.success({ title: 'Term version updated!' });
         console.log("updated term version");
-        goto("/");
+        goto(`/term/${termName}`);
       }
+      
   </script>
   
   <form class="max-w-1/2 mx-auto items-center">

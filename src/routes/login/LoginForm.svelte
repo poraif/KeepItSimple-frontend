@@ -11,7 +11,7 @@
 
     const doLogin = async (): Promise<void> => {
         const userLogin: UserLogin = {
-            username: username,
+            username: username.toLowerCase().trim(),
             password: password
         };
         if (!username || !password) {

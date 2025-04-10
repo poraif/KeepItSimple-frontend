@@ -129,9 +129,11 @@ export const apiService = {
 
     /* AUTH */
 
-    async signup(user: UserSignup): Promise<void> {
+    async signup(user: UserSignup): Promise<boolean> {
         try {
             await axios.post(`${this.baseUrl}/account/signup`, user);
+            console.log('User signed up successfully:', user);
+            return true;
         }
         catch (error) {
             console.error(error);
