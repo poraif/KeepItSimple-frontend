@@ -6,6 +6,7 @@
 	import { termListStore } from '$lib/stores';
 	import { get } from 'svelte/store';
 	import Button from '$lib/ui/Button.svelte';
+	import { goto } from '$app/navigation';
   
   let termNames = $state([""]);
   termListStore.subscribe((value) => {
@@ -52,11 +53,13 @@
     };
     if (termNames.includes(termName)) {
       apiService.addTermVersion(termName, termVersion);
+      goto(`/term/${termName}`);
       console.log("Added term version, term existed");
     }
     else {
       console.log("Added term version and term, term didnt exist");
       apiService.addTermAndVersion(termAndVersion);
+      goto(`/term/${termName}`);
       termListStore.update((termList) => [...termList, termName]);
     }
   };

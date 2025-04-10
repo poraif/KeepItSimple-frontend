@@ -19,6 +19,23 @@ export const apiService = {
             }
         }
     },
+
+    async getTerm(termName: string): Promise<Term> {
+        try {
+            const token = get(authToken);
+            const response = await axios.get(`${this.baseUrl}/term/${termName}/get`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data;
+        }
+        catch (error) {
+            console.error(error);
+            return {} as Term;
+        }
+    },
     
     async addTermVersion(termName: string, termVersion: TermVersion): Promise<boolean> {
         try {
@@ -122,7 +139,7 @@ export const apiService = {
         }
     },
 
-    async login(user: UserLogin): Promise<void> {
+    async login(user: UserLogin): Promise<boolean> {
         try {
             const response = await axios.post(`${this.baseUrl}/account/login`, user);
             console.log('Full response:', response);
@@ -132,33 +149,32 @@ export const apiService = {
                 const username = getUserFromToken(token);
                 usernameStore.set(username);
                 console.log('token returned at login: ', token);
-                return token;
-            }
-            else {
+                return true;
+            } else {
                 throw new Error('Failed to log in: error with the auth token');
             }
-        }
-        catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('Login error:', error.response ? error.response.data : error.message);
-            } else {
-                console.error('Login error:', error);
-            }
-            throw new Error('Failed to log in: request error');       
+        } catch (error) {
+            console.error('Login error:', error);
+            return false;
         }
     },
 
     /* SEARCH TERM */
 
-    async search(termName: string): Promise<TermAndCurrentVersion> {
+    async search(termName: string): Promise<TermAndCurrentVersion | null> {
         try {
             const response = await axios.get(`${this.baseUrl}/term/search?term=${termName}`);
             console.log('search response:', response);
-            return response.data;
+            if (response.data) {
+                 return response.data;
+            }
+            else {
+                return null;
+            }
         }
         catch (error) {
-            console.error(error);
-            throw new Error('search failed!');
+            console.error("error in search term:", error);
+            throw new Error('Failed to search term');
         }
     },
 
@@ -186,7 +202,7 @@ export const apiService = {
                     'Content-Type': 'application/json'
                 }
             });
-            return response.data.success === true;
+            return response.status === 200;
         }
         catch (error) {
             console.error(error);
@@ -214,16 +230,21 @@ export const apiService = {
     async addTermtoCollection(termName: string, collectionName: string): Promise<boolean> {
         try {
             const token = get(authToken);
-            const response = await axios.put(`${this.baseUrl}/collections/${collectionName}/addterm?=${termName}`,  {
-                headers: {
-                    Authorization: `Bearer ${token}`, 
-                    'Content-Type': 'application/json'
+            console.log('token in add term to collection:', token);
+    
+            const response = await axios.put(
+                `${this.baseUrl}/collections/${collectionName}/addterm?termName=${termName}`, null,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 }
-            });
-            return response.data.success === true;
-        }
-        catch (error) {
-            console.error(error);
+            );
+    
+            return response.status === 200;
+        } catch (error) {
+            console.error('Error in addTermtoCollection:', error);
             return false;
         }
     },
@@ -231,7 +252,7 @@ export const apiService = {
     async removeTermFromCollection(termName: string, collectionName: string): Promise<boolean> {
         try {
             const token = get(authToken);
-            const response = await axios.put(`${this.baseUrl}/collections/${collectionName}/removeterm?=${termName}`,  {
+            const response = await axios.put(`${this.baseUrl}/collections/${collectionName}/removeterm?termName=${termName}`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`, 
                     'Content-Type': 'application/json'
@@ -282,6 +303,7 @@ export const apiService = {
     async deleteCollection(collectionName: string): Promise<boolean> {
         try {
             const token = get(authToken);
+            console.log('token in delete collection:', token);
             const response = await axios.delete(`${this.baseUrl}/collections/${collectionName}/delete`,  {
                 headers: {
                     Authorization: `Bearer ${token}`, 

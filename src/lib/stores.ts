@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store';
-import type { TermAndCurrentVersion, TermCollection } from '$lib/entity-types';
+import type { Term, TermAndCurrentVersion, TermCollection } from '$lib/entity-types';
 import { persisted } from 'svelte-persisted-store';
 import { jwtDecode } from 'jwt-decode';
+import { createToaster } from '@skeletonlabs/skeleton-svelte';
 
 // made this always return a string to satisfy typescript
 export const getUserFromToken = (authToken: string): string => {
@@ -31,3 +32,6 @@ export const usernameStore = persisted('username', '');
   export const currentTermStore = persisted<TermAndCurrentVersion | null>('currentTerm', null);
 
 
+  export const TermsInCollectionStore = writable<Term[]>([]);
+
+  export const toaster = createToaster();

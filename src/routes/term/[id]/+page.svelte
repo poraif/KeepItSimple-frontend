@@ -1,10 +1,6 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { page } from '$app/stores';
 	import type { TermAndCurrentVersion } from '$lib/entity-types';
-    import { currentTermStore, termStore } from '$lib/stores';
-    import { apiService } from '$lib/services/api-service';
-    import TermCodeSnippet from '$lib/ui/TermCodeSnippet.svelte';
+    import { currentTermStore } from '$lib/stores';
     import TermContentCard from '$lib/ui/TermContentCard.svelte';
     import TermNameCatCards from '$lib/ui/TermNameCatCards.svelte';
     import "svelte-highlight/styles/a11y-dark.css";
@@ -16,22 +12,6 @@
     currentTermStore.subscribe((value) => {
         term = value;
     });
-
-    let code = $state("");
-    let shortDef = $state("");
-
-    // onMount(async () => {
-    //     if (!term) {
-    //         const name = $page.url.pathname.split('/').pop(); 
-    //         if (name) {
-    //             const fetchedTerm = await apiService.search(name); 
-    //             termStore.set(fetchedTerm); 
-    //             term = fetchedTerm;
-    //             code = term.codeSnippet;
-    //             shortDef = term.shortDef.toString();
-    //         }
-    //     }
-    // });
 
 </script>
 

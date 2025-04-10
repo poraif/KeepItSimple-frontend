@@ -1,19 +1,41 @@
 <script lang="ts">
     import { apiService } from '$lib/services/api-service';
     import type { UserLogin } from '$lib/entity-types';
+    import { toaster } from '$lib/stores';
 	import { goto } from '$app/navigation';
 
 	let username = $state("");
 	let password = $state("");
 
-	const doLogin = (): void =>  {
-		const userLogin: UserLogin = {
-			username: username,
-			password: password
-		};
-		apiService.login(userLogin);
-        goto('/');
-	};
+    let errorMessage = $state("");
+
+    const doLogin = async (): Promise<void> => {
+        const userLogin: UserLogin = {
+            username: username,
+            password: password
+        };
+        if (!username || !password) {
+            errorMessage = "Please enter both username and password.";
+            toaster.error({ title: errorMessage });
+            return;
+        }
+        try {
+            const success = await apiService.login(userLogin);
+            if (success) {
+                toaster.success({ title: 'Match! Logging in..' });
+                console.log("Login successful");
+                goto('/');
+            } else {
+                errorMessage = "Invalid username or password.";
+                toaster.error({ title: errorMessage });
+                console.log("Login failed");
+            }
+        } catch (error) {
+            errorMessage = "Error occurred during login.";
+            toaster.error({ title: errorMessage });
+            console.error("Login error:", error);
+        }
+    };
 
 </script>
 
