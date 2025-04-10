@@ -1,6 +1,7 @@
 <script lang="ts">
     import { authToken, usernameStore } from '$lib/stores';
     import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
     let token = $state("");
     let username = $state("");
@@ -16,6 +17,7 @@
     const doLogout = () => {
         authToken.set("");
         usernameStore.set("");
+        goto("/login");
     };
     
 

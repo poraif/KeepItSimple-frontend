@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { TermsInCollectionStore, termListStore, toaster } from "$lib/stores";
+    import { TermsInCollectionStore, toaster } from "$lib/stores";
     import { apiService } from "$lib/services/api-service";
     import { onMount } from "svelte";
     import type { Term } from "$lib/entity-types";
@@ -15,20 +15,13 @@
     TermsInCollectionStore.subscribe((value) => {
         collectionTerms = value;
         });
-    
-    // let existingTerms = $state([""]);
-    // termListStore.subscribe((value) => {
-    //     existingTerms = value;
-    //     });
-    
+
     let termName = $state("");
     
     onMount(async () => {
             try {
                 const termsInCollectionsList = await apiService.getCollectionTerms(collectionName);
                     TermsInCollectionStore.set(termsInCollectionsList);
-                // const termList = await apiService.getTermNames();
-                // termListStore.set(termList);
             } catch (error) {
                 console.error("Error fetching collection terms:", error);
             }

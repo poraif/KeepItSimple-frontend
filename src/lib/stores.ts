@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { Term, TermAndCurrentVersion, TermCollection, UserDetails, tokenPayload } from '$lib/entity-types';
+import type { Term, TermAndCurrentVersion, TermCollection, UnapprovedVersion, UserDetails, tokenPayload } from '$lib/entity-types';
 import { persisted } from 'svelte-persisted-store';
 import { jwtDecode } from 'jwt-decode';
 import { createToaster } from '@skeletonlabs/skeleton-svelte';
@@ -33,6 +33,8 @@ export const userRoleStore = persisted('userRole', '');
   export const termCollectionStore = persisted<TermCollection[]>('collectionList', []);
 
   export const currentTermStore = persisted<TermAndCurrentVersion | null>('currentTerm', null);
+
+  export const unapprovedVersionStore = persisted<UnapprovedVersion[] | null>('unapproved versions', null);
 
 
   export const TermsInCollectionStore = writable<Term[]>([]);

@@ -47,6 +47,13 @@ export interface TermAndCurrentVersion {
     loggedInUserVote: number;
 }
 
+export interface UnapprovedVersion {
+    id: bigint;
+    name: string;
+    username: string;
+}
+
+
 export interface AddTermAndVersion {
     name: string;
     category: string;

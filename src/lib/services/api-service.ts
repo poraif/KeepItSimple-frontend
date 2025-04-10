@@ -1,7 +1,6 @@
 import axios from 'axios';
-import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion, AddTermAndVersion, TermCollection } from '$lib/entity-types';
+import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion, AddTermAndVersion, TermCollection, UnapprovedVersion } from '$lib/entity-types';
 import { authToken, usernameStore, getUserFromToken, userRoleStore } from '$lib/stores';
-// import { persisted } from 'svelte-persisted-store';
 import { get } from 'svelte/store';
 
 export const apiService = {
@@ -320,6 +319,26 @@ export const apiService = {
             return false;
         }
     },
+
+    /* ADMIN FJNCTIONS */
+
+    async getUnapprovedTermVersions(): Promise<UnapprovedVersion[]> {
+        try {
+            const token = get(authToken);
+            console.log('token for gettning unapproved list:', token);
+            const response = await axios.get(`${this.baseUrl}/admin/unapprovedversions`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data as UnapprovedVersion[];
+        }
+            catch (error) {
+                console.error(error);
+                return [];
+            }
+        },
 
 
 

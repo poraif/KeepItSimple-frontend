@@ -1,16 +1,24 @@
 <script lang="ts">
-import { termCollectionStore, usernameStore, userRoleStore } from "$lib/stores";
+import { termCollectionStore, unapprovedVersionStore, usernameStore, userRoleStore } from "$lib/stores";
 import { apiService } from "$lib/services/api-service";
 import { onMount } from "svelte";
 import CollectionListCard from "./CollectionListCard.svelte";
-import type { TermCollection } from "$lib/entity-types";
+import type { TermCollection, UnapprovedVersion } from "$lib/entity-types";
 import Button from "$lib/ui/Button.svelte";
 	import { goto } from "$app/navigation";
+	import UnapprovedListCard from "./UnapprovedListCard.svelte";
 
 let username = $usernameStore
 let userRole = $userRoleStore
 
 let collections: TermCollection[] = $state([]);
+
+let unapprovedVersions: UnapprovedVersion[] | null =  $state([]);
+
+unapprovedVersionStore.subscribe((value) => {
+    unapprovedVersions = value;
+    });
+
 
 termCollectionStore.subscribe((value) => {
         collections = value;
@@ -21,10 +29,17 @@ let editedDescription = $state("");
 
 onMount(async () => {
         try {
-            const collectionList = await apiService.getUserCollections();
-            termCollectionStore.set(collectionList);
+            if (userRole === "ROLE_EDITOR") {
+                const collectionList = await apiService.getUserCollections();
+                termCollectionStore.set(collectionList);
+                console.log("Collections:", collectionList);
+            } else if (userRole === "ROLE_ADMIN") {
+                const unapprovedVersionsList = await apiService.getUnapprovedTermVersions();
+                unapprovedVersionStore.set(unapprovedVersionsList);
+                console.log("Unapproved versions:", unapprovedVersionsList);
+            }
         } catch (error) {
-            console.error("Error fetching collections:", error);
+            console.error("Error fetching profile data:", error);
         }
 });
 
@@ -76,15 +91,10 @@ const doAddCollection = async (): Promise<void> => {
 <h2 class="h3"> {username} admin dashboard</h2>
 <hr class="hr border-dashed" />
 <h3 class="h3">Term versions for approval</h3>
-{#if collections.length > 0}
-    {#each collections as collection}
-        <CollectionListCard collectionName={collection.name} collectionDescription={collection.description} />
+{#if unapprovedVersions && unapprovedVersions.length > 0}
+    {#each unapprovedVersions as version}
+        <UnapprovedListCard termName={version.name} author={version.username} versionId={version.id} />
     {/each}
-{/if}
-    <div class="flex flex-col gap-2 mb-4 w-1/4">
-        <input class="input" type="text" id="collectionName" bind:value={editedName} required>
-        <input class="input" type="text" id="collectionDescription" bind:value={editedDescription} required>
-        <Button text="Save" onClick={() => doAddCollection()} />
-      </div>   
+{/if} 
 </div>
 {/if}
