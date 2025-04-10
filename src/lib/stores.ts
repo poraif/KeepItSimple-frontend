@@ -1,26 +1,29 @@
 import { writable } from 'svelte/store';
-import type { Term, TermAndCurrentVersion, TermCollection } from '$lib/entity-types';
+import type { Term, TermAndCurrentVersion, TermCollection, UserDetails, tokenPayload } from '$lib/entity-types';
 import { persisted } from 'svelte-persisted-store';
 import { jwtDecode } from 'jwt-decode';
 import { createToaster } from '@skeletonlabs/skeleton-svelte';
 
-// made this always return a string to satisfy typescript
-export const getUserFromToken = (authToken: string): string => {
+export const getUserFromToken = (authToken: string): UserDetails => {
   try {
-    const decodedToken = jwtDecode(authToken);
-    return decodedToken.sub ?? '';
-  }
-  catch (error) {
+    const decodedToken = jwtDecode<tokenPayload>(authToken);
+    const userDetails: UserDetails = {
+      username: decodedToken.sub ?? '',
+      role: decodedToken.role ?? ''
+    };
+    return userDetails;
+  } catch (error) {
     console.error('error with token:', error);
-    return '';
+    return { username: '', role: '' };
   }
-}
+};
 
 // auth
 export const authToken = persisted('token', ''); 
 
 // user
 export const usernameStore = persisted('username', '');
+export const userRoleStore = persisted('userRole', ''); 
 
   // term
   export const termStore = writable<TermAndCurrentVersion | null>(null);

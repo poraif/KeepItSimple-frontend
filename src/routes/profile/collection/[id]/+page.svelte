@@ -36,13 +36,13 @@
     
     const doAddTermToCollection = async (): Promise<void> => {
         try {
-            const fullTerm = await apiService.getTerm(termName);
+            const termAndCat = await apiService.getTerm(termName);
             const success = await apiService.addTermtoCollection(termName, collectionName);
             if (success) {
                 console.log(`${termName} added to collection successfully`);
                 toaster.success({ title: 'Term added to collection' });
                 termName = "";
-                TermsInCollectionStore.update((collectionTerms) => [...collectionTerms, fullTerm]);
+                TermsInCollectionStore.update((collectionTerms) => [...collectionTerms, termAndCat]);
                 goto(`/profile/collection/${collectionName}`);
                 }
              else {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { Term, TermVersion, UserLogin, UserSignup, TermAndCurrentVersion, AddTermAndVersion, TermCollection } from '$lib/entity-types';
-import { authToken, usernameStore, getUserFromToken } from '$lib/stores';
+import { authToken, usernameStore, getUserFromToken, userRoleStore } from '$lib/stores';
 // import { persisted } from 'svelte-persisted-store';
 import { get } from 'svelte/store';
 
@@ -148,8 +148,9 @@ export const apiService = {
             const token = response.data;
             if (token) {
                 authToken.set(token);
-                const username = getUserFromToken(token);
-                usernameStore.set(username);
+                const user = getUserFromToken(token);
+                usernameStore.set(user.username);
+                userRoleStore.set(user.role);
                 console.log('token returned at login: ', token);
                 return true;
             } else {

@@ -21,6 +21,20 @@ export interface UserSignup {
     password: string;
 }
 
+export interface UserDetails {
+    username: string;
+    role: string;
+}
+
+export interface tokenPayload {
+    sub: string;
+    iat: string;
+    exp: string;
+    role: string;
+}
+
+
+
 export interface TermAndCurrentVersion {
     id: bigint;
     name: string;

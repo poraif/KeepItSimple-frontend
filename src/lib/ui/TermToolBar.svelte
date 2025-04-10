@@ -102,12 +102,17 @@ const doDownVote = async (): Promise<void> => {
         {/snippet}
         {#snippet children()}
         {#if token}
-          <PackageOpen size={35} />
+          <div class="flex items-center gap-4">
+            {#if term?.username === null || term?.username === undefined}
+              <button type="button" class="chip preset-filled">AI-generated</button>
+            {/if}
+            <button onclick={() => goto("/profile")}><PackageOpen size={35} /></button>
+          </div>
         {/if}
-        {/snippet}
+      {/snippet}
         {#snippet trail()}
         {#if !(termAuthorCheck()) && token}
-          <SquarePlus size={35} />
+        <button onclick={() => goto(`/term/${term?.name}/add`)}><SquarePlus size={35} /></button> 
           {#if term?.loggedInUserVote === 1}
             <button onclick={() => doUpvote()}><CircleArrowUp size={35} fill="green" /></button>
             <button onclick={() => doDownVote()}><CircleArrowDown size={35} /></button>
